@@ -21,26 +21,29 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          accept-android-sdk-licenses: false
 
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses
 
       - name: Install Android SDK
         run: |
-          sdkmanager "platform-tools"
-          sdkmanager "platforms;android-35"
-          sdkmanager "build-tools;35.0.0"
+          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
+      - name: Extract project
+        run: |
+          unzip -o BattleRoyale_GitHub_Ready.zip
+          cd BattleRoyale_Dingana26_APK_Project
+          ls -la
 
       - name: Build APK
-        run: gradle :app:assembleDebug
+        working-directory: BattleRoyale_Dingana26_APK_Project
+        run: |
+          gradle :app:assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BattleRoyale-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: BattleRoyale_Dingana26_APK_Project/app/build/outputs/apk/debug/app-debug.apk
