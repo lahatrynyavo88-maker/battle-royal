@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Java 17
@@ -24,10 +24,11 @@ jobs:
         with:
           accept-android-sdk-licenses: false
 
-      - name: Accept Android licenses
-        run: yes | sdkmanager --licenses >/dev/null || true
+      - name: Accept licenses
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
 
-      - name: Install SDK packages
+      - name: Install Android SDK
         run: |
           sdkmanager --install \
             "platform-tools" \
@@ -37,8 +38,8 @@ jobs:
       - name: Extract project
         run: |
           unzip -o BattleRoyale_GitHub_Ready.zip
-          ls -la
           ls -la BattleRoyale_Dingana26_APK_Project
+          ls -la BattleRoyale_Dingana26_APK_Project/app
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -48,7 +49,7 @@ jobs:
       - name: Build APK
         working-directory: BattleRoyale_Dingana26_APK_Project
         run: |
-          gradle :app:assembleDebug
+          gradle :app:assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
